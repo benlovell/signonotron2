@@ -20,7 +20,8 @@ class User < ActiveRecord::Base
   USER_STATUSES = [USER_STATUS_SUSPENDED, USER_STATUS_INVITED, USER_STATUS_PASSPHRASE_EXPIRED,
                    USER_STATUS_LOCKED, USER_STATUS_ACTIVE]
 
-  devise :database_authenticatable, :recoverable, :trackable,
+  devise :two_factor_authenticatable, :database_authenticatable,
+         :recoverable, :trackable,
          :validatable, :timeoutable, :lockable,                # devise core model extensions
          :invitable,    # in devise_invitable gem
          :suspendable,  # in signonotron2/lib/devise/models/suspendable.rb
@@ -29,6 +30,8 @@ class User < ActiveRecord::Base
          :confirmable,
          :password_archivable, # in signonotron2/lib/devise/models/password_archivable.rb
          :password_expirable   # in signonotron2/lib/devise/models/password_expirable.rb
+
+  has_one_time_password
 
   validates :name, presence: true
   validates :reason_for_suspension, presence: true, if: proc { |u| u.suspended? }
