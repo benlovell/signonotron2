@@ -7,7 +7,7 @@
   <%= yield :content_for_head %>
 <% end %>
 
-<% if user_signed_in? && params[:controller] !~ %r{doorkeeper/} %>
+<% if user_signed_in? && params[:controller] !~ %r{doorkeeper/} && controller.is_fully_authenticated? %>
   <% content_for :navbar_items do %>
     <%= nav_link 'Dashboard', root_path %>
     <% if policy(User).index? %>

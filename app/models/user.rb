@@ -58,6 +58,25 @@ class User < ActiveRecord::Base
   scope :last_signed_in_after, lambda { |date| web_users.not_suspended.where('date(current_sign_in_at) >= date(?)', date) }
   scope :not_recently_unsuspended, lambda { where(['unsuspended_at IS NULL OR unsuspended_at < ?', UNSUSPENSION_GRACE_PERIOD.ago]) }
 
+  def need_two_factor_authentication?(_request)
+    # Rather than "should this user be required to have 2FA?" it means
+    # "should this user be sent into the verification process on this request?"
+    not otp_secret_key.nil?
+
+    # %w{admin superadmin}.include?(role)
+  end
+
+  def send_two_factor_authentication_code
+    # Called by two_factor_authentication gem. Required to override the default
+    # implementation. This would be used for sending an SMS.
+    nil
+  end
+
+  def reset_two_factor_authentication!
+    key = ROTP::Base32.random_base32
+    update_attributes(:otp_secret_key => key)
+  end
+
   def event_logs
     EventLog.where(uid: uid).order(created_at: :desc)
   end

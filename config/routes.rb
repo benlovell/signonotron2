@@ -29,6 +29,7 @@ Signonotron2::Application.routes.draw do
   resources :batch_invitations, only: [:new, :create, :show]
   resources :organisations, only: [:index]
   resources :suspensions, only: [:edit, :update]
+  resource :two_step_setup, only: [:new, :create, :edit, :update, :destroy], controller: :two_step_setup
 
   resources :doorkeeper_applications, only: [:index, :edit, :update] do
     resources :supported_permissions, only: [:index, :new, :create, :edit, :update]

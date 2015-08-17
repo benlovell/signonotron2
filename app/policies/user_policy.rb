@@ -24,6 +24,15 @@ class UserPolicy < BasePolicy
   alias_method :suspension?, :edit?
   alias_method :resend?, :edit?
 
+  def two_step_setup?
+    current_user.id == record.id
+  end
+  alias_method :new, :two_step_setup?
+  alias_method :create, :two_step_setup?
+  alias_method :edit, :two_step_setup?
+  alias_method :update, :two_step_setup?
+  alias_method :destroy, :two_step_setup?
+
   def edit_email_or_passphrase?
     current_user.id == record.id
   end
